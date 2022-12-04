@@ -1,0 +1,8 @@
+requests
+RPi.GPIO
+picamera
+pickle5
+opencv-python
+paho-mqtt
+pybluez
+scipy

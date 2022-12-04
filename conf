@@ -1,0 +1,40 @@
+[MAIN]
+log_level=info
+mosquitto_ip=127.0.0.1
+mosquitto_user=pt2
+mosquitto_pass=gorkd34!
+
+
+
+[GPIO]
+mode=board
+warn_on=False
+
+[MODULE]
+move_enable=True
+view_enable=True
+remote_enable=True
+auto_enable=True
+sensors_enable=True
+
+
+# standby TB6612FNG
+[MOTOR]
+pwm1 = 32
+pwm2 = 33
+ain1 = 13
+ain2 = 15
+bin1 = 16
+bin2 = 18
+stby = 37
+pwm_frequency=100
+pwm_max_fill=60
+
+[CAM]
+cam_enable=True
+frame_rate=15
+jpg_quality=90
+
+[BLUETOOTH]
+# server or bluedot
+controller=bluedot
