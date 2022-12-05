@@ -32,6 +32,7 @@ class Remote:
         self.client_sub.username_pw_set(self.m_user, self.m_pass)
         self.client_sub.connect(self.mqttBroker)
 
+
         self.bluetooth_server = Bluetooth_controller(self)
         self.bluetooth_server.start()
 
@@ -96,7 +97,7 @@ class Bluetooth_controller(threading.Thread):
 
     def run(self):
         time.sleep(5)
-        cmd = 'sudo hciconfig hci0 piscan'
+        cmd = '/usr/bin/sudo /usr/bin/hciconfig hci0 piscan'
         try:
             subprocess.check_output(cmd, shell=True)
         except Exception as e:
