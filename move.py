@@ -22,7 +22,12 @@ class Move:
         self.gpio_cf = load_conf('GPIO')
 
         log_level = self.main_cf['log_level']
-        set_logging(log_level)
+        if self.main_cf['log_to_file'] == 'True':
+            set_logging(log_level,True)
+        elif self.main_cf['log_to_file'] == 'False':
+            set_logging(log_level,False)
+        else:
+            sys.exit()
 
         self.multiplier_speed = 5
 

@@ -20,7 +20,12 @@ class PiTank:
         self.module_cf = load_conf('MODULE')
 
         log_level = self.main_cf['log_level']
-        set_logging(log_level)
+        if self.main_cf['log_to_file'] == 'True':
+            set_logging(log_level,True)
+        elif self.main_cf['log_to_file'] == 'False':
+            set_logging(log_level,False)
+        else:
+            sys.exit()
 
         mqttBroker = self.main_cf['mosquitto_ip']
         m_user = self.main_cf['mosquitto_user']

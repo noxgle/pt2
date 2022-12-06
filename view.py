@@ -25,7 +25,12 @@ class View:
         self.m_pass = self.main_cf['mosquitto_pass']
 
         log_level = self.main_cf['log_level']
-        set_logging(log_level)
+        if self.main_cf['log_to_file'] == 'True':
+            set_logging(log_level,True)
+        elif self.main_cf['log_to_file'] == 'False':
+            set_logging(log_level,False)
+        else:
+            sys.exit()
 
         self.cam_enable = self.cam_cf['cam_enable']
         self.frame_rate = int(self.cam_cf['frame_rate'])

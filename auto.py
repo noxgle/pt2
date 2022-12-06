@@ -19,7 +19,12 @@ class Auto:
         self.m_pass = self.main_cf['mosquitto_pass']
 
         log_level = self.main_cf['log_level']
-        set_logging(log_level)
+        if self.main_cf['log_to_file'] == 'True':
+            set_logging(log_level,True)
+        elif self.main_cf['log_to_file'] == 'False':
+            set_logging(log_level,False)
+        else:
+            sys.exit()
 
         self.client = mqtt.Client(f"{type(self).__name__} publisher")
         self.client.username_pw_set(self.m_user, self.m_pass)

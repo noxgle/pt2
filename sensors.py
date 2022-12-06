@@ -43,7 +43,12 @@ class Sensors:
         self.m_pass = self.main_cf['mosquitto_pass']
 
         log_level = self.main_cf['log_level']
-        set_logging(log_level)
+        if self.main_cf['log_to_file'] == 'True':
+            set_logging(log_level,True)
+        elif self.main_cf['log_to_file'] == 'False':
+            set_logging(log_level,False)
+        else:
+            sys.exit()
 
         self.netwrok = Network(self)
         self.netwrok.get_default_ip()

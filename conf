@@ -1,5 +1,6 @@
 [MAIN]
 log_level=info
+log_to_file=False
 mosquitto_ip=127.0.0.1
 mosquitto_user=pt2
 mosquitto_pass=gorkd34!
