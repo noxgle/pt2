@@ -15,3 +15,5 @@ Main modules:
 - "remote" is for bluetooth remote control 
 - "sensors" in this module we can add different sensors, default is network sensor for monitoring ip address  
 
+Pt2 software is used in my prototype robot "prot1".
+![Screenshot](prot1.jpg)
