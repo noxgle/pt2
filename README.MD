@@ -17,3 +17,7 @@ Main modules:
 
 Pt2 software is used in my prototype robot "prot1".
 ![Screenshot](prot1.jpg)
+
+- prot1 is moving between lines.
+
+[![IMAGE ALT TEXT HERE](https://img.youtube.com/vi/L91djZ4qats/0.jpg)](https://youtu.be/L91djZ4qats)
