@@ -11,6 +11,7 @@ import math
 from collections import deque
 from motor import *
 
+
 class Move:
     def __init__(self):
         self.subscriber_name = [('auto', 0), ('remote', 0)]
@@ -23,9 +24,9 @@ class Move:
 
         log_level = self.main_cf['log_level']
         if self.main_cf['log_to_file'] == 'True':
-            set_logging(log_level,True)
+            set_logging(log_level, True)
         elif self.main_cf['log_to_file'] == 'False':
-            set_logging(log_level,False)
+            set_logging(log_level, False)
         else:
             sys.exit()
 
@@ -72,6 +73,14 @@ class Move:
                             int(self.motor_conf['pwm_frequency']), self.pwm_max_fill)
         self.motor2 = Motor(int(self.motor_conf['bin1']), int(self.motor_conf['bin2']), int(self.motor_conf['pwm2']),
                             int(self.motor_conf['pwm_frequency']), self.pwm_max_fill)
+
+        if self.motor_conf['public_joystick_data'] == 'True':
+            self.public_joystick_data = True
+        elif self.motor_conf['public_joystick_data'] == 'False':
+            self.public_joystick_data = False
+        else:
+            logging.critical(f"{type(self).__name__}: incorrect public_joystick_data only True or False")
+            sys.exit()
 
         self.speed_interpolation = interp1d([-1.0, 1.0], [-self.pwm_max_fill, self.pwm_max_fill])
         self.run()
@@ -154,6 +163,9 @@ class Move:
     def joystick(self, data):
         logging.debug(f"{type(self).__name__}: data :  {data}")
         btn_status = int(data[0])
+        if self.public_joystick_data is True:
+            payload = json.dumps({'move': {'public_joystick_data': data}})
+            self.client.publish('move', payload)
 
         if btn_status == 0:
             # unpressed
