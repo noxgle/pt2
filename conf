@@ -6,7 +6,6 @@ mosquitto_user=pt2
 mosquitto_pass=gorkd34!
 
 
-
 [GPIO]
 mode=board
 warn_on=False
@@ -21,6 +20,7 @@ sensors_enable=True
 
 # standby TB6612FNG
 [MOTOR]
+public_joystick_data=True
 pwm1 = 32
 pwm2 = 33
 ain1 = 13
