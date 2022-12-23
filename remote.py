@@ -23,9 +23,9 @@ class Remote:
 
         log_level = self.main_cf['log_level']
         if self.main_cf['log_to_file'] == 'True':
-            set_logging(log_level,True)
+            set_logging(log_level, True)
         elif self.main_cf['log_to_file'] == 'False':
-            set_logging(log_level,False)
+            set_logging(log_level, False)
         else:
             sys.exit()
 
@@ -36,7 +36,6 @@ class Remote:
         self.client_sub = mqtt.Client(f"{type(self).__name__} subscriber")
         self.client_sub.username_pw_set(self.m_user, self.m_pass)
         self.client_sub.connect(self.mqttBroker)
-
 
         self.bluetooth_server = Bluetooth_controller(self)
         self.bluetooth_server.start()
