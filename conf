@@ -1,6 +1,6 @@
 [MAIN]
 log_level=info
-log_to_file=False
+log_to_file=True
 mosquitto_ip=127.0.0.1
 mosquitto_user=pt2
 mosquitto_pass=gorkd34!
@@ -29,7 +29,7 @@ bin1 = 16
 bin2 = 18
 stby = 37
 pwm_frequency=100
-pwm_max_fill=60
+pwm_max_fill=100
 
 [CAM]
 cam_enable=True
