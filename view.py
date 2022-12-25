@@ -1,3 +1,5 @@
+import time
+
 from utils import *
 import json
 import paho.mqtt.client as mqtt
@@ -44,16 +46,21 @@ class View:
         self.client_sub.username_pw_set(self.m_user, self.m_pass)
         self.client_sub.connect(self.mqttBroker)
 
+        if self.cam_enable == 'True':
+            self.cam = Cam()
+            self.cam.start()
+            time.sleep(1)
+
         self.run()
 
-    def cam_on(self):
-        self.cam = Cam()
-        self.cam.start()
-        time.sleep(1)
-
-    def cam_off(self):
-        self.cam.stop()
-        self.cam = None
+    # def cam_on(self):
+    #     self.cam = Cam()
+    #     self.cam.start()
+    #     time.sleep(1)
+    #
+    # def cam_off(self):
+    #     self.cam.stop()
+    #     self.cam = None
 
     def new_frame_rate(self, new_frame_rate):
         if new_frame_rate > self.cam.frame_rate:
@@ -64,18 +71,20 @@ class View:
         self.client_sub.loop_start()
         self.client_sub.subscribe(self.subscriber_name)
         self.client_sub.on_message = self.on_message
-        if self.cam_enable == 'True':
-            self.cam_on()
+
         try:
             #self.new_frame_rate(self.frame_rate)
             prev = 0
             while self._run:
-                time_elapsed = time.time() - prev
-                if time_elapsed > 1. / self.frame_rate and self.cam is not None:
-                    prev = time.time()
-                    frame=self.cam.get_frame()
-                    self.client.publish('view',  pickle.dumps(frame), qos=0)
-                time.sleep(0.001)
+                if self.cam is not None:
+                    time_elapsed = time.time() - prev
+                    if time_elapsed > 1. / self.frame_rate:
+                        prev = time.time()
+                        frame=self.cam.get_frame()
+                        self.client.publish('view',  pickle.dumps(frame), qos=0)
+                    time.sleep(0.001)
+                else:
+                    time.sleep(1)
 
 
         except Exception as e:
@@ -101,9 +110,9 @@ class View:
                 if payload['cmd'] == 'exit':
                     self.exit()
                 elif payload['cmd'] == 'cam_on':
-                    self.cam_on()
+                    self.cam.cap.start()
                 elif payload['cmd'] == 'cam_off':
-                    self.cam_off()
+                    self.cam.cap.stop()
 
 
         except Exception as e:

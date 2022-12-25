@@ -40,3 +40,4 @@ class Cam(threading.Thread):
 
     def stop(self):
         self._run = False
+
