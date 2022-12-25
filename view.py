@@ -6,16 +6,18 @@ import paho.mqtt.client as mqtt
 # from subscriber import *
 import base64
 import numpy as np
-#import pickle5 as pickle
+# import pickle5 as pickle
 import _pickle as pickle
 from cam import *
 import sys
+
 
 class View:
     def __init__(self):
         self.subscriber_name = [('auto', 0), ('remote', 0), ('sensors', 0)]
         self._run = True
         self.cam = None
+        self.cam_cap = None
         self.frame_rate = 15
 
         self.main_cf = load_conf('MAIN')
@@ -28,9 +30,9 @@ class View:
 
         log_level = self.main_cf['log_level']
         if self.main_cf['log_to_file'] == 'True':
-            set_logging(log_level,True)
+            set_logging(log_level, True)
         elif self.main_cf['log_to_file'] == 'False':
-            set_logging(log_level,False)
+            set_logging(log_level, False)
         else:
             sys.exit()
 
@@ -49,23 +51,14 @@ class View:
         if self.cam_enable == 'True':
             self.cam = Cam()
             self.cam.start()
+            self.cam_cap = True
             time.sleep(1)
 
         self.run()
 
-    # def cam_on(self):
-    #     self.cam = Cam()
-    #     self.cam.start()
-    #     time.sleep(1)
-    #
-    # def cam_off(self):
-    #     self.cam.stop()
-    #     self.cam = None
-
     def new_frame_rate(self, new_frame_rate):
         if new_frame_rate > self.cam.frame_rate:
             self.frame_rate = new_frame_rate
-
 
     def run(self):
         self.client_sub.loop_start()
@@ -73,15 +66,14 @@ class View:
         self.client_sub.on_message = self.on_message
 
         try:
-            #self.new_frame_rate(self.frame_rate)
             prev = 0
             while self._run:
-                if self.cam is not None:
+                if self.cam is not None and self.cam_cap is True:
                     time_elapsed = time.time() - prev
                     if time_elapsed > 1. / self.frame_rate:
                         prev = time.time()
-                        frame=self.cam.get_frame()
-                        self.client.publish('view',  pickle.dumps(frame), qos=0)
+                        frame = self.cam.get_frame()
+                        self.client.publish('view', pickle.dumps(frame), qos=0)
                     time.sleep(0.001)
                 else:
                     time.sleep(1)
@@ -91,7 +83,7 @@ class View:
             logging.error(f"{type(self).__name__}: {e}")
         finally:
             if self.cam is not None:
-                self.cam_off()
+                self.cam.cap.stop()
             self.client.loop_stop()
             self.client_sub.loop_stop()
             sys.exit()
@@ -111,8 +103,10 @@ class View:
                     self.exit()
                 elif payload['cmd'] == 'cam_on':
                     self.cam.cap.start()
+                    self.cam_cap = True
                 elif payload['cmd'] == 'cam_off':
                     self.cam.cap.stop()
+                    self.cam_cap = False
 
 
         except Exception as e:
