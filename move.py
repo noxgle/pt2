@@ -17,6 +17,7 @@ class Move:
         self.subscriber_name = [('auto', 0), ('remote', 0)]
         self._run = True
         self.bridge_stby_status = True
+        self.last_message_time=None
 
         self.main_cf = load_conf('MAIN')
         self.motor_conf = load_conf('MOTOR')
@@ -98,6 +99,7 @@ class Move:
             self.bridge_stby_status = False
             payload = json.dumps({'move': {'bridge_stby_status': str(self.bridge_stby_status)}})
             self.client.publish('move', payload)
+            self.last_message_time = time.time()
 
     def forward(self):
         if self.motor1.speed > self.motor2.speed:
@@ -246,10 +248,13 @@ class Move:
             self.client_sub.loop_start()
             self.client_sub.subscribe(self.subscriber_name)
             self.client_sub.on_message = self.on_message
+            self.last_message_time=time.time()
             while self._run:
-                if self.bridge_stby_status is False and self.motor1.speed == 0 and self.motor2.speed == 0:
-                    self.bridge_standby_on()
-                time.sleep(1)
+                if self.bridge_stby_status is False:
+                    if self.motor1.speed == 0 and self.motor2.speed == 0 and time.time() > self.last_message_time + 5:
+                        self.bridge_standby_on()
+                time.sleep(0.1)
+
         except Exception as e:
             print(e)
         finally:
