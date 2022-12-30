@@ -9,8 +9,9 @@ import json
 
 class Auto:
     def __init__(self):
-        self.subscriber_name = [('view', 0), ('pitank', 0), ('sensors', 0)]
+        self.subscriber_name = [('pitank', 0), ('move', 0), ('view', 0), ('sensors', 0), ('remote', 1)]
         self._run = True
+        self.remote_status = False
 
         self.main_cf = load_conf('MAIN')
 
@@ -20,9 +21,9 @@ class Auto:
 
         log_level = self.main_cf['log_level']
         if self.main_cf['log_to_file'] == 'True':
-            set_logging(log_level,True)
+            set_logging(log_level, True)
         elif self.main_cf['log_to_file'] == 'False':
-            set_logging(log_level,False)
+            set_logging(log_level, False)
         else:
             sys.exit()
 
@@ -34,6 +35,8 @@ class Auto:
         self.client_sub.username_pw_set(self.m_user, self.m_pass)
         self.client_sub.connect(self.mqttBroker)
 
+        self.power_save = int(self.main_cf['power_save'])
+
         self.run()
 
     def run(self):
@@ -42,6 +45,16 @@ class Auto:
         self.client_sub.on_message = self.on_message
         try:
             while self._run:
+                if self.power_save == 0:
+                    pass
+                elif self.power_save == 1:
+                    if self.remote_status is True:
+                        payload = json.dumps({'cmd': 'cam_on'})
+                        self.client.publish('auto', payload)
+                    elif self.remote_status is False:
+                        payload = json.dumps({'cmd': 'cam_off'})
+                        self.client.publish('auto', payload)
+
                 time.sleep(1)
         except Exception as e:
             logging.critical(f"{type(self).__name__}: {e}")
@@ -57,10 +70,26 @@ class Auto:
 
         try:
             payload = json.loads(message.payload.decode("utf-8"))
+            topic = message.topic
             logging.debug(f"{type(self).__name__}: topic received message: {message.topic}, {payload}")
+            if topic == 'pitank':
+                pass
+            elif topic == 'move':
+                pass
+            elif topic == 'view':
+                pass
+            elif topic == 'sensors':
+                pass
+            elif topic == 'remote':
+                if payload['status'] == 'on':
+                    self.remote_status = True
+                elif payload['status'] == 'off':
+                    self.remote_status = False
+
 
         except Exception as e:
-            print(e)
+            logging.debug(f"{type(self).__name__},{e}")
+
 
 if __name__ == "__main__":
     Auto()

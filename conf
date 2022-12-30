@@ -4,7 +4,10 @@ log_to_file=True
 mosquitto_ip=127.0.0.1
 mosquitto_user=pt2
 mosquitto_pass=gorkd34!
-
+# power_save:
+# 0 = no power save
+# 1 = on connected bluetooth controller cam is on, if not cam is off
+power_save=1
 
 [GPIO]
 mode=board
@@ -16,7 +19,6 @@ view_enable=True
 remote_enable=True
 auto_enable=True
 sensors_enable=True
-
 
 # standby TB6612FNG
 [MOTOR]
