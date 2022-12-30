@@ -81,6 +81,7 @@ class Bluetooth_controller(threading.Thread):
     def client_connect(self, server_sock):
         client_sock, client_info = server_sock.accept()
         logging.debug(f"{type(self).__name__}: Accepted connection from  {client_info}")
+        self.remote.client.publish("remote", json.dumps({'status': 'on'}), qos=1)
         try:
             while True:
                 payload = client_sock.recv(1024)
@@ -97,6 +98,7 @@ class Bluetooth_controller(threading.Thread):
         except IOError as e:
             logging.error(f"{type(self).__name__}: {e}")
         finally:
+            self.remote.client.publish("remote", json.dumps({'status': 'off'}), qos=1)
             client_sock.close()
 
     def run(self):
