@@ -1,3 +1,4 @@
+import logging
 import sys
 
 from utils import *
@@ -11,7 +12,7 @@ import socket
 
 class Remote:
     def __init__(self):
-        self.subscriber_name = [('view', 0), ('pitank', 0), ('sensors', 0)]
+        self.subscriber_name = [('pitank', 0), ('sensors', 0)]
         self._run = True
 
         self.main_cf = load_conf('MAIN')
@@ -67,7 +68,7 @@ class Remote:
             logging.debug(f"{type(self).__name__}: topic received message: {message.topic}, {payload}")
 
         except Exception as e:
-            print(e)
+            logging.error(f"{type(self).__name__}: {e}")
 
 
 class Bluetooth_controller(threading.Thread):
@@ -96,7 +97,7 @@ class Bluetooth_controller(threading.Thread):
 
                 # client_sock.send('')
         except IOError as e:
-            logging.error(f"{type(self).__name__}: {e}")
+            logging.warning(f"{type(self).__name__}: {e}")
         finally:
             self.remote.client.publish("remote", json.dumps({'status': 'off'}), qos=1)
             client_sock.close()

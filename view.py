@@ -99,18 +99,19 @@ class View:
             if topic == 'sensors':
                 pass
             else:
-                if payload['cmd'] == 'exit':
-                    self.exit()
-                elif payload['cmd'] == 'cam_on':
-                    self.cam.cap.start()
-                    self.cam_cap = True
-                elif payload['cmd'] == 'cam_off':
-                    self.cam.cap.stop()
-                    self.cam_cap = False
+                if 'cmd' in payload:
+                    if payload['cmd'] == 'exit':
+                        self.exit()
+                    elif payload['cmd'] == 'cam_on':
+                        self.cam.cap.start()
+                        self.cam_cap = True
+                    elif payload['cmd'] == 'cam_off':
+                        self.cam.cap.stop()
+                        self.cam_cap = False
 
 
         except Exception as e:
-            print(e)
+            logging.error(f"{type(self).__name__}: {e}")
 
 
 if __name__ == '__main__':

@@ -271,25 +271,26 @@ class Move:
             payload = json.loads(message.payload.decode("utf-8"))
             logging.debug(f"{type(self).__name__}: topic received message: {message.topic}, {payload}")
 
-            if payload['cmd'] == 'exit':
-                self.exit()
-            elif payload['cmd'] == 'forward':
-                self.bridge_standby_off()
-                self.forward()
-            elif payload['cmd'] == 'backward':
-                self.bridge_standby_off()
-                self.backward()
-            elif payload['cmd'] == 'left':
-                self.bridge_standby_off()
-                self.left()
-            elif payload['cmd'] == 'right':
-                self.bridge_standby_off()
-                self.right()
-            elif payload['cmd'] == 'break':
-                self.stop_motors()
-            elif payload['cmd'] == 'joystick':
-                self.bridge_standby_off()
-                self.joystick(payload['data'])
+            if 'cmd' in payload:
+                if payload['cmd'] == 'exit':
+                    self.exit()
+                elif payload['cmd'] == 'forward':
+                    self.bridge_standby_off()
+                    self.forward()
+                elif payload['cmd'] == 'backward':
+                    self.bridge_standby_off()
+                    self.backward()
+                elif payload['cmd'] == 'left':
+                    self.bridge_standby_off()
+                    self.left()
+                elif payload['cmd'] == 'right':
+                    self.bridge_standby_off()
+                    self.right()
+                elif payload['cmd'] == 'break':
+                    self.stop_motors()
+                elif payload['cmd'] == 'joystick':
+                    self.bridge_standby_off()
+                    self.joystick(payload['data'])
         except Exception as e:
             logging.error(f"{type(self).__name__}: {e}")
 

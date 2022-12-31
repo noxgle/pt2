@@ -43,10 +43,10 @@ class PiTank:
             self.modules_name.append('view')
         if remote_enable == 'True':
             self.modules_name.append('remote')
-        if auto_enable == 'True':
-            self.modules_name.append('auto')
         if sensors_enable == 'True':
             self.modules_name.append('sensors')
+        if auto_enable == 'True':
+            self.modules_name.append('auto')
 
         self.client_pub = mqtt.Client(f"{type(self).__name__} publisher")
         self.client_pub.username_pw_set(m_user, m_pass)
@@ -63,7 +63,7 @@ class PiTank:
             logging.debug(f"{type(self).__name__}: topic received message: {message.topic}, {payload}")
 
         except Exception as e:
-            print(e)
+            logging.error(f"{type(self).__name__}: {e}")
 
     def run(self):
         self.start()
