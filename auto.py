@@ -29,7 +29,7 @@ class Auto:
 
         self.client = mqtt.Client(f"{type(self).__name__} publisher")
         self.client.username_pw_set(self.m_user, self.m_pass)
-        self.client.connect(self.mqttBroker)
+        self.client.connect(self.mqttBroker,keepalive=0)
 
         self.client_sub = mqtt.Client(f"{type(self).__name__} subscriber")
         self.client_sub.username_pw_set(self.m_user, self.m_pass)
@@ -37,7 +37,7 @@ class Auto:
 
         self.power_save = int(self.main_cf['power_save'])
         self.remote_status = False
-        self.cam_status=True
+
         self.run()
 
     def run(self):
@@ -52,16 +52,14 @@ class Auto:
                     pass
                 elif self.power_save == 1:
                     if self.remote_status is True:
-                        if self.cam_status is False:
-                            payload = json.dumps({'cmd': 'cam_on'})
-                            self.client.publish('auto', payload)
-                            self.cam_status=True
-                    elif self.remote_status is False:
-                        if self.cam_status is True:
-                            payload = json.dumps({'cmd': 'cam_off'})
-                            self.client.publish('auto', payload)
-                            self.cam_status = False
+                        payload = json.dumps({'cmd': 'cam_on'})
+                        self.client.publish('auto', payload,qos=1)
+                        self.remote_status=None
 
+                    elif self.remote_status is False:
+                        payload = json.dumps({'cmd': 'cam_off'})
+                        self.client.publish('auto', payload,qos=1)
+                        self.remote_status = None
                 time.sleep(1)
         except Exception as e:
             logging.critical(f"{type(self).__name__}: {e}")
@@ -84,6 +82,7 @@ class Auto:
             elif topic == 'view':
                 payload=pickle.loads(message.payload)
                 payload=f'frame size: {payload.shape}'
+
             elif topic == 'sensors':
                 payload = json.loads(message.payload.decode("utf-8"))
             elif topic == 'remote':
