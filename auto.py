@@ -88,10 +88,11 @@ class Auto:
                 payload = json.loads(message.payload.decode("utf-8"))
             elif topic == 'remote':
                 payload = json.loads(message.payload.decode("utf-8"))
-                if payload['status'] == 'on':
-                    self.remote_status = True
-                elif payload['status'] == 'off':
-                    self.remote_status = False
+                if 'status' in payload:
+                    if payload['status'] == 'on':
+                        self.remote_status = True
+                    elif payload['status'] == 'off':
+                        self.remote_status = False
 
 
             logging.debug(f"{type(self).__name__}: topic received message: {message.topic}, {payload}")
