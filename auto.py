@@ -33,7 +33,7 @@ class Auto:
 
         self.client_sub = mqtt.Client(f"{type(self).__name__} subscriber")
         self.client_sub.username_pw_set(self.m_user, self.m_pass)
-        self.client_sub.connect(self.mqttBroker)
+        self.client_sub.connect(self.mqttBroker,keepalive=0)
 
         self.power_save = int(self.main_cf['power_save'])
         self.remote_status = False

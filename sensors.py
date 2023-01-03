@@ -13,7 +13,7 @@ class Network:
 
         self.client = mqtt.Client(f"{type(sensors).__name__} publisher")
         self.client.username_pw_set(sensors.m_user, sensors.m_pass)
-        self.client.connect(sensors.mqttBroker)
+        self.client.connect(sensors.mqttBroker,keepalive=0)
         self.default_ip=self.get_default_ip()
 
     def get_default_ip(self):

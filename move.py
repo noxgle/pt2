@@ -43,7 +43,7 @@ class Move:
 
         self.client_sub = mqtt.Client(f"{type(self).__name__} subscriber")
         self.client_sub.username_pw_set(self.m_user, self.m_pass)
-        self.client_sub.connect(self.mqttBroker)
+        self.client_sub.connect(self.mqttBroker,keepalive=0)
 
         gpio_mode = self.gpio_cf['mode']
         gpio_warn_on = self.gpio_cf['warn_on']

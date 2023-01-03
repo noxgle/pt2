@@ -42,11 +42,11 @@ class View:
 
         self.client = mqtt.Client(f"{type(self).__name__} publisher")
         self.client.username_pw_set(self.m_user, self.m_pass)
-        self.client.connect(self.mqttBroker)
+        self.client.connect(self.mqttBroker,keepalive=0)
 
         self.client_sub = mqtt.Client(f"{type(self).__name__} subscriber")
         self.client_sub.username_pw_set(self.m_user, self.m_pass)
-        self.client_sub.connect(self.mqttBroker)
+        self.client_sub.connect(self.mqttBroker,keepalive=0)
 
         if self.cam_enable == 'True':
             self.cam = Cam()

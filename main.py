@@ -54,7 +54,7 @@ class PiTank:
 
         self.client_sub = mqtt.Client(f"{type(self).__name__} subscriber")
         self.client_sub.username_pw_set(m_user, m_pass)
-        self.client_sub.connect(mqttBroker)
+        self.client_sub.connect(mqttBroker,keepalive=0)
 
     def on_message(self, client, userdata, message):
 
