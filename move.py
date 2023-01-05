@@ -13,6 +13,20 @@ from motor import *
 
 
 class Move:
+    """
+    The Move class is responsible for controlling the movement of a robot. It does this by using two motor objects,
+    which are used to control the movement of the robot's wheels. The class also uses the MQTT protocol to
+    communicate with other modules and receive commands to control the movement of the robot.
+
+    The class reads a configuration file to set options such as the MQTT broker connection and the pinout
+    configuration for the Raspberry Pi's GPIO. It also reads options for controlling the motors, such as the maximum
+    PWM signal and the frequency of the PWM signal.
+
+    During the program's operation, the Move class can receive commands from other modules through MQTT and use them
+    to control the movement of the robot. It also has the option to send data about the joystick controlling the
+    robot's movement to other modules. The class also has a method for enabling and disabling the standby mode of the
+    motor driver.
+    """
     def __init__(self):
         self.subscriber_name = [('auto', 0), ('remote', 0)]
         self._run = True
