@@ -11,6 +11,21 @@ signal.signal(signal.SIGCHLD, signal.SIG_IGN)
 
 
 class PiTank:
+    """
+    The PiTank class is responsible for starting and stopping other modules, as well as communicating with them using
+    the MQTT protocol. In order to start the appropriate modules, it reads a configuration file in which the options
+    for turning on individual modules are set. In addition, this class can set logging options and MQTT broker
+    connection options based on the configuration file.
+
+    During the program's operation, the PiTank receives messages
+    from other modules using MQTT and is able to stop the operation of all modules and end the operation of the
+    entire program. This is achieved through the start() method, which starts all modules, and the stop() method,
+    which stops the operation of all modules and ends the operation of the entire program.
+
+    This class also allows for the receipt of messages from other modules using MQTT and their logging. To do this,
+    the on_message() method is used, which is called after the broker receives a message.
+    """
+
     def __init__(self):
         self.subscriber_name = [('auto', 0), ('move', 0), ('remote', 0), ('sensors', 0)]
         self.modules_name = []
@@ -21,9 +36,9 @@ class PiTank:
 
         log_level = self.main_cf['log_level']
         if self.main_cf['log_to_file'] == 'True':
-            set_logging(log_level,True)
+            set_logging(log_level, True)
         elif self.main_cf['log_to_file'] == 'False':
-            set_logging(log_level,False)
+            set_logging(log_level, False)
         else:
             sys.exit()
 
@@ -54,7 +69,7 @@ class PiTank:
 
         self.client_sub = mqtt.Client(f"{type(self).__name__} subscriber")
         self.client_sub.username_pw_set(m_user, m_pass)
-        self.client_sub.connect(mqttBroker,keepalive=0)
+        self.client_sub.connect(mqttBroker, keepalive=0)
 
     def on_message(self, client, userdata, message):
 
