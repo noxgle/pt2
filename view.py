@@ -13,6 +13,14 @@ import sys
 
 
 class View:
+    """
+    The View class is responsible for displaying the camera image and communicating with other devices using MQTT.
+    It can:
+    - create an object of the Cam class, which is responsible for handling the camera
+    - display the camera image by publishing it to MQTT
+    - receive messages from other devices using MQTT
+    - stop/start the camera
+    """
     def __init__(self):
         self.subscriber_name = [('auto', 0), ('remote', 0), ('sensors', 0)]
         self._run = True
