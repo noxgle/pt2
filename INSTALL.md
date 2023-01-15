@@ -26,7 +26,11 @@ sudo mosquitto_passwd -c -b /etc/mosquitto/passwd pt2 gorkd34!
 echo "password_file /etc/mosquitto/passwd" | sudo tee --append /etc/mosquitto/mosquitto.conf
 echo "allow_anonymous false" | sudo tee --append /etc/mosquitto/mosquitto.conf
 ```
-### Step 5:
+### Step 5: remove xserver 
+```
+sudo apt purge xserver* lightdm* raspberrypi-ui-mods
+```
+### Step 6:
 ```
 reboot
 ```
