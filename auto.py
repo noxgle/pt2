@@ -5,13 +5,13 @@ from utils import *
 
 import time
 import json
-import _pickle as pickle
+import pickle
+import base64
 
 class Auto:
     def __init__(self):
         self.subscriber_name = [('pitank', 0), ('move', 0), ('view', 0), ('sensors', 0), ('remote', 1)]
         self._run = True
-
 
         self.main_cf = load_conf('MAIN')
 
@@ -29,11 +29,11 @@ class Auto:
 
         self.client = mqtt.Client(f"{type(self).__name__} publisher")
         self.client.username_pw_set(self.m_user, self.m_pass)
-        self.client.connect(self.mqttBroker,keepalive=0)
+        self.client.connect(self.mqttBroker, keepalive=0)
 
         self.client_sub = mqtt.Client(f"{type(self).__name__} subscriber")
         self.client_sub.username_pw_set(self.m_user, self.m_pass)
-        self.client_sub.connect(self.mqttBroker,keepalive=0)
+        self.client_sub.connect(self.mqttBroker, keepalive=0)
 
         self.power_save = int(self.main_cf['power_save'])
         self.remote_status = False
@@ -53,12 +53,12 @@ class Auto:
                 elif self.power_save == 1:
                     if self.remote_status is True:
                         payload = json.dumps({'cmd': 'cam_on'})
-                        self.client.publish('auto', payload,qos=1)
-                        self.remote_status=None
+                        self.client.publish('auto', payload, qos=1)
+                        self.remote_status = None
 
                     elif self.remote_status is False:
                         payload = json.dumps({'cmd': 'cam_off'})
-                        self.client.publish('auto', payload,qos=1)
+                        self.client.publish('auto', payload, qos=1)
                         self.remote_status = None
                 time.sleep(1)
         except Exception as e:
@@ -80,8 +80,10 @@ class Auto:
             elif topic == 'move':
                 payload = json.loads(message.payload.decode("utf-8"))
             elif topic == 'view':
-                payload=pickle.loads(message.payload)
-                payload=f'frame size: {payload.shape}'
+                img = base64.b64decode(message.payload)
+                npimg = np.frombuffer(img, dtype=np.uint8)
+                payload = cv2.imdecode(npimg, 1)
+                payload = f'frame size: {payload.shape}'
 
             elif topic == 'sensors':
                 payload = json.loads(message.payload.decode("utf-8"))
@@ -92,7 +94,6 @@ class Auto:
                         self.remote_status = True
                     elif payload['status'] == 'off':
                         self.remote_status = False
-
 
             logging.debug(f"{type(self).__name__}: topic received message: {message.topic}, {payload}")
 

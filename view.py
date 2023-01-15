@@ -83,12 +83,12 @@ class View:
                         frame = self.cam.get_frame()
                         # self.client.publish('view', pickle.dumps(frame), qos=0)
 
-                        _, buffer = cv2.imencode('.jpg', frame,[cv2.IMWRITE_JPEG_QUALITY, 100])
+                        _, buffer = cv2.imencode('.jpg', frame,[cv2.IMWRITE_JPEG_QUALITY, 80])
                         self.client.publish('view', base64.b64encode(buffer), qos=0)
-
-                    time.sleep(0.001)
+                    else:
+                        time.sleep(0.001)
                 else:
-                    time.sleep(1)
+                    time.sleep(0.1)
 
 
         except Exception as e:
