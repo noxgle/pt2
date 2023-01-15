@@ -6,10 +6,10 @@ import paho.mqtt.client as mqtt
 # from subscriber import *
 import base64
 import numpy as np
-# import pickle5 as pickle
-import _pickle as pickle
+import pickle
 from cam import *
 import sys
+import base64
 
 
 class View:
@@ -81,7 +81,11 @@ class View:
                     if time_elapsed > 1. / self.frame_rate:
                         prev = time.time()
                         frame = self.cam.get_frame()
-                        self.client.publish('view', pickle.dumps(frame), qos=0)
+                        # self.client.publish('view', pickle.dumps(frame), qos=0)
+
+                        _, buffer = cv2.imencode('.jpg', frame,[cv2.IMWRITE_JPEG_QUALITY, 100])
+                        self.client.publish('view', base64.b64encode(buffer), qos=0)
+
                     time.sleep(0.001)
                 else:
                     time.sleep(1)

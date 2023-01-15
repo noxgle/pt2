@@ -17,9 +17,11 @@ class Cam(threading.Thread):
         # video_config =self.cap.create_still_configuration(main={"size": (320, 240),"format": 'XRGB8888'}, raw={"size":  self.cap.sensor_resolution},controls={"FrameDurationLimits": (16, 16)})
         # video_config['main']['format'] = 'RGB888'
         # self.cap.configure(video_config)
-        self.cap.configure(self.cap.create_preview_configuration({"size": (320, 240)}, raw=self.cap.sensor_modes[1]))
-        # self.cap.set_controls({"ExposureTime": 40, "AnalogueGain": 1.5})
-        # video_config = self.cap.create_video_configuration(raw=self.cap.sensor_modes[1])
+        #self.cap.configure(self.cap.create_preview_configuration({"size": (320, 240)}, raw=self.cap.sensor_modes[1]))
+        #self.cap.set_controls({"ExposureTime": 40, "AnalogueGain": 1.5})
+        #self.cap.create_video_configuration(raw=self.cap.sensor_modes[0])
+        #self.cap.configure(self.cap.create_preview_configuration({"size": (640, 480)}, raw=self.cap.sensor_modes[0]))
+        self.cap.configure(self.cap.create_preview_configuration({"size": (320, 240)}, raw=self.cap.sensor_modes[0]))
         # self.cap.configure(video_config)
         self.cap.start()
 
