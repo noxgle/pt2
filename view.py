@@ -84,9 +84,12 @@ class View:
 
                         _, buffer = cv2.imencode('.jpg', frame,[cv2.IMWRITE_JPEG_QUALITY, 80])
                         self.client.publish('view', base64.b64encode(buffer), qos=0)
+                        #self.client.publish('view_stream_status', json.dumps({'status': 'on'}), qos=0)
                     else:
                         time.sleep(0.001)
                 else:
+                    #self.client.publish('view_stream_status', json.dumps({'status': 'off'}), qos=0)
+                    self.client.publish('view', base64.b64encode(b''), qos=0)
                     time.sleep(0.1)
 
 

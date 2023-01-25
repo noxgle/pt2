@@ -8,6 +8,7 @@ import json
 import pickle
 import base64
 
+
 class Auto:
     def __init__(self):
         self.subscriber_name = [('pitank', 0), ('move', 0), ('view', 0), ('sensors', 0), ('remote', 1)]
@@ -37,7 +38,7 @@ class Auto:
 
         self.power_save = int(self.main_cf['power_save'])
         self.remote_status = False
-
+        self.cam_stream_status = False
         self.run()
 
     def run(self):
@@ -51,12 +52,12 @@ class Auto:
                 if self.power_save == 0:
                     pass
                 elif self.power_save == 1:
-                    if self.remote_status is True:
+                    if self.remote_status is True and self.cam_stream_status is False:
                         payload = json.dumps({'cmd': 'cam_on'})
                         self.client.publish('auto', payload, qos=1)
                         self.remote_status = None
 
-                    elif self.remote_status is False:
+                    elif self.remote_status is False and self.cam_stream_status is True:
                         payload = json.dumps({'cmd': 'cam_off'})
                         self.client.publish('auto', payload, qos=1)
                         self.remote_status = None
@@ -80,10 +81,14 @@ class Auto:
             elif topic == 'move':
                 payload = json.loads(message.payload.decode("utf-8"))
             elif topic == 'view':
-                img = base64.b64decode(message.payload)
-                npimg = np.frombuffer(img, dtype=np.uint8)
-                payload = cv2.imdecode(npimg, 1)
-                payload = f'frame size: {payload.shape}'
+                payload = base64.b64decode(message.payload)
+                if payload is b'':
+                    self.cam_stream_status = False
+                else:
+                    self.cam_stream_status = True
+                    # npimg = np.frombuffer(payload, dtype=np.uint8)
+                    # payload = cv2.imdecode(npimg, 1)
+                    # payload = f'frame size: {payload.shape}'
 
             elif topic == 'sensors':
                 payload = json.loads(message.payload.decode("utf-8"))
