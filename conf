@@ -6,7 +6,7 @@ mosquitto_user=pt2
 mosquitto_pass=gorkd34!
 # power_save:
 # 0 = no power save
-# 1 = on connected bluetooth controller cam is on, if not cam is off
+# 1 = power_save
 power_save=1
 
 [GPIO]
